@@ -1,35 +1,35 @@
 #include <stdio.h>
 #include <stdlib.h>
-
-int elementNum = 3;
-char set[elementNum] = {'a','b','c'};
-bool solution[elementNum];
+#include <stdbool.h>
+#include <math.h>
 
 
-void genPowerSet(int elementNum, int currentElement);
+char set[3] = {'a','b','c'};
+bool solution[3];
+
+
+void genPowerSet(int currentElement);
 
 
 int main()
 {
-	
-
-
-
-
+	genPowerSet(0);
 }
 
-void genPowerSet(int elementNum, int currentElement)
+void genPowerSet(int currentElement)
 {
 	/*e.g 3 elements, if we've decided all 3 elements to be true or false, we've found one solution then print this solution*/
 	int i;
-	if(currentElement == elementNum)
+	if(currentElement == 3)
 	{
-		for(i=0;i<elementNum;i++)
+		printf("{");
+		for(i=0;i<3;i++)
 		{
 			if(solution[i] == true)
-				printf("%c ",set[i]);
+				printf("%c",set[i]);
 		}
-		printf("\n");
+
+		printf("}\n");
 		return;
 	}
 	
