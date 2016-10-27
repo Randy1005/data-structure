@@ -5,9 +5,15 @@ int value(int n, int a, int b, int i, int j, int e[]);
 
 int main()
 {
-	printf("Please input the file name: ");
 	char inputFile[30];
+	int lowerBand;
+	int upperBand;
+	printf("Please input the file name: ");
 	scanf("%s",inputFile);
+	printf("a: ");
+	scanf("%d",&lowerBand);
+	printf("b: ");
+	scanf("%d",&upperBand);
 	//printf("%s",inputFile);
 	
 	FILE *ifp = fopen(inputFile,"r");
@@ -62,11 +68,36 @@ int main()
 		printf("\n");
 	}
 	*/
+	int element_of_e = matrixDim; //initialize num of elements of e_array to dimension of matrix
+	int temp = matrixDim; //a temp variable for adding
+	int a = lowerBand;
+
+	/*add up lowerBand first*/
+	while(a > 1)
+	{
+		element_of_e += (temp-1);
+		temp--;
+		a--;
+	}
+
+	/*then add up upperBand*/
+	int temp2 = matrixDim;
+	int b = upperBand;
+	while(b > 1)
+	{
+		element_of_e += (temp2-1);
+		temp2--;
+		b--;
+	}
+
+	printf("%d\n",element_of_e);
 	
 	
 }
 
+/*
 int value(int n, int a, int b, int i, int j, int e[])
 {
-
+	return matrix[i][j];	
 }
+*/
