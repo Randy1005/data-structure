@@ -90,7 +90,42 @@ int main()
 		b--;
 	}
 
-	printf("%d\n",element_of_e);
+	//printf("%d\n",element_of_e);
+	
+	/*create e array*/
+	int e[element_of_e];
+	/*initialize e array*/
+	for(i=0;i<element_of_e;i++)
+		e[i] = 0;
+
+
+	int k,l = 0; //loop variable
+	int ini_m = 0 + (lowerBand - 1); //initial position of d(m,n)
+	int ini_n = 0;
+	int e_index = 0; //index variable of e array
+
+	/*run through bands of this matrix*/
+	while(e_index < element_of_e)
+	{
+		k = ini_m;
+		l = ini_n;
+		while(k <= (matrixDim-1) && l <= (matrixDim-1))
+		{
+			e[e_index] = matrix[k][l];
+			k++;
+			l++;
+			e_index++;
+		}
+
+		if(ini_m != 0)
+			ini_m--;
+		else
+			ini_n++;
+
+	}
+	
+	for(i=0;i<element_of_e;i++)
+		printf("%d\n",e[i]);
 	
 	
 }
