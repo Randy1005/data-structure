@@ -104,6 +104,9 @@ int main()
 	int ini_n = 0;
 	int e_index = 0; //index variable of e array
 
+	/*to store d(i,j)*/
+	int element_index_i[element_of_e];
+	int element_index_j[element_of_e];
 	/*run through bands of this matrix*/
 	while(e_index < element_of_e)
 	{
@@ -112,6 +115,8 @@ int main()
 		while(k <= (matrixDim-1) && l <= (matrixDim-1))
 		{
 			e[e_index] = matrix[k][l];
+			element_index_i[e_index] = k;
+			element_index_j[e_index] = l;
 			k++;
 			l++;
 			e_index++;
@@ -124,15 +129,17 @@ int main()
 
 	}
 	
+	/*call value function to get the final result*/
 	for(i=0;i<element_of_e;i++)
-		printf("%d\n",e[i]);
+		printf("e[%d] = %d\td(%d,%d)\n",i,e[i],element_index_i[i],element_index_j[i]);
 	
 	
 }
 
-/*
+
 int value(int n, int a, int b, int i, int j, int e[])
 {
-	return matrix[i][j];	
+	
+	return (sizeof(e)/sizeof(int));	
 }
-*/
+
