@@ -9,11 +9,23 @@ int main()
 
 	int row,col;
 	int ini_X,ini_Y;
-	printf("RANGE: 2<N<=40 , 2<M<=20\n");
+	int MAX_SQUARE = 50000;
+	
+	printf("THIS A \"RANDOM WALK\" PROGRAM,PLEASE ENTER THE LENGTH OF ROW(N) AND COLUMN(M),AND THE INITIAL POSITION YOU WISH TO START AT\nRANGE: 2<N<=40 , 2<M<=20\n");
 	printf("N: ");
 	scanf("%d",&row);
 	printf("M: ");
 	scanf("%d",&col);
+
+	/*restrict N and M requirements*/
+	while(row <= 2 || row > 40 || col <= 2 || col > 20)
+	{
+		printf("OUT OF RANGE, ENTER AGAIN\n");
+		printf("N: ");
+		scanf("%d",&row);
+		printf("M: ");
+		scanf("%d",&col);
+	}
 	
 	printf("Initial bug position X: ");
 	scanf("%d",&ini_X);
@@ -48,7 +60,9 @@ int main()
 				//printf("k = %d\n",k);
 				/*check if the bug is out of border*/
 				while(ibug+imove[k] > (row-1) || ibug+imove[k] < 0 || jbug+jmove[k] > (col-1) || jbug+jmove[k] < 0)
+				{
 					k = rand()%8;
+				}
 					
 				ibug += imove[k];
 				jbug += jmove[k];
@@ -63,14 +77,17 @@ int main()
 	for(i=0;i<row;i++)
 		for(j=0;j<col;j++)
 			total_step += count[i][j];
+	
+	/*write final result into a file: Sample_output.txt)*/
+	FILE *ofp = fopen("result.txt","w");
 
-	printf("total steps = %d\n",total_step);
+	fprintf(ofp,"total steps = %d\n",total_step);
 
 	for(i=0;i<row;i++)
 	{
 		for(j=0;j<col;j++)
-			printf("%d\t",count[i][j]);
-		printf("\n");
+			fprintf(ofp,"%d\t",count[i][j]);
+		fprintf(ofp,"\n");
 	}
 	
 
