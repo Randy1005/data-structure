@@ -62,19 +62,19 @@ int main()
 	j = 0;
 	while((temp = fgetc(ifp)) != EOF)
 	{
-		if((temp = fgetc(ifp)) != '\n')
+		if(temp != '\n')
 		{
-			printf("come on ");
 			maze[i][j] = temp;
 			j++;
-		}
+		}		
 		else
 		{
 			i++;
 			j = 0;
-		}				
+		}
 	}
 	fclose(ifp);
+	
 	
 	
 	/*
@@ -85,6 +85,7 @@ int main()
 		printf("\n");
 	}
 	*/
+	
 	
 	
 	
