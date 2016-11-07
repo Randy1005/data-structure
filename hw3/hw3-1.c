@@ -37,20 +37,20 @@ bool visit(int N,char maze[][N],int i,int j)
 
 	else if(maze[i][j] == 's' || maze[i][j] == '0') //a valid path
 	{
-			maze[i][j] = '*';
+		maze[i][j] = '*';
 
-		if(visit(N,maze,i-1,j) || visit(N,maze,i+1,j) || visit(N,maze,i,j-1) || visit(N,maze,i,j+1) || visit(N,maze,i-1,j+1) || visit(N,maze,i-1,j-1) || visit(N,maze,i+1,j+1) || visit(N,maze,i+1,j-1))
-			return true; //try 7 directions
+		if(visit(N,maze,i-1,j) || visit(N,maze,i+1,j) || visit(N,maze,i,j-1) || visit(N,maze,i,j+1) || visit(N,maze,i-1,j+1) || visit(N,maze,i-1,j-1) || visit(N,maze,i+1,j+1) || visit(N,maze,i+1,j-1) == true)
+			return true; //try 8 directions
 		 
 		else //if not valid
 		{
-				maze[i][j] = '0'; //unmark
-				return false;
+			maze[i][j] = '0'; //unmark
+			return false;
 		}
 	}
 
 	else //encounters wall '1'
-		return false; 
+		return false;
 		
 }
 
@@ -144,13 +144,25 @@ int main()
 			}
 		}
 	
+	int steps = 0; //total steps
 	/*set up initial postion and start solving the maze*/
 	if(visit(N,maze,startPt.x,startPt.y))
 	{
 		/*changed 's' to '*' in visit accidentally, change back to 's'*/
 		maze[startPt.x][startPt.y] = 's';
+
+		/*count steps*/
+
+		for(i=0;i<M;i++)
+			for(j=0;j<N;j++)
+				if(maze[i][j] == '*' || maze[i][j] == 'd')
+					steps++;
+				
 		printSol(M,N,maze);
+		printf("%d steps\n",steps);
 	}
+	else //no solution
+		printf("No route\n");
 
 
 
