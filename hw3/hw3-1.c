@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-/*std=c99 compile*/
 /*needs to pass at least second element to 2D array as fucntion parameter*/
 
 typedef struct {
@@ -21,37 +20,41 @@ void printSol(int M,int N,char sol[][N])
 	}
 }
 
-
-/*
-bool isSafe(int x,int y,int M,int N)
+/*function to check border*/
+bool isSafe(int i,int j,int M,int N)
 {
-	if(x >= 0 && x < M && y >= 0 && y < N)
+	if(i >= 0 && i < M && j >= 0 && j < N)
 		return true;
-}
-*/
-
-bool visit(int N,char maze[][N],int i,int j)
-{
-	if(maze[i][j] == 'd') //reaches destination
-		return true;
-
-	else if(maze[i][j] == 's' || maze[i][j] == '0') //a valid path
-	{
-		maze[i][j] = '*';
-
-		if(visit(N,maze,i-1,j) || visit(N,maze,i+1,j) || visit(N,maze,i,j-1) || visit(N,maze,i,j+1) || visit(N,maze,i-1,j+1) || visit(N,maze,i-1,j-1) || visit(N,maze,i+1,j+1) || visit(N,maze,i+1,j-1) == true)
-			return true; //try 8 directions
-		 
-		else //if not valid
-		{
-			maze[i][j] = '0'; //unmark
-			return false;
-		}
-	}
-
-	else //encounters wall '1'
+	else
 		return false;
-		
+}
+
+
+bool visit(int M,int N,char maze[][N],int i,int j)
+{
+	if(isSafe(i,j,M,N)) //check border
+	{
+		if(maze[i][j] == 'd') //reaches destination
+			return true;
+
+		else if(maze[i][j] == 's' || maze[i][j] == '0') //a valid path
+		{
+			maze[i][j] = '*'; //mark the path
+
+			if(visit(M,N,maze,i-1,j) || visit(M,N,maze,i+1,j) || visit(M,N,maze,i,j-1) || visit(M,N,maze,i,j+1) || visit(M,N,maze,i-1,j+1) || visit(M,N,maze,i-1,j-1) || visit(M,N,maze,i+1,j+1) || visit(M,N,maze,i+1,j-1) == true)
+				return true; //try 8 directions
+
+			else //if not valid
+			{
+				maze[i][j] = '0'; //unmark
+				return false;
+			}
+		}
+
+		else //encounters wall '1'
+			return false;
+	}
+	
 }
 
 
@@ -129,7 +132,7 @@ int main()
 		}
 	}
 	fclose(ifp);
-	
+
 	/*Here we start solving the maze*/
 
 	/*first get the starting position*/
@@ -143,10 +146,10 @@ int main()
 				startPt.y = j;
 			}
 		}
-	
+
 	int steps = 0; //total steps
 	/*set up initial postion and start solving the maze*/
-	if(visit(N,maze,startPt.x,startPt.y))
+	if(visit(M,N,maze,startPt.x,startPt.y))
 	{
 		/*changed 's' to '*' in visit accidentally, change back to 's'*/
 		maze[startPt.x][startPt.y] = 's';
@@ -157,7 +160,7 @@ int main()
 			for(j=0;j<N;j++)
 				if(maze[i][j] == '*' || maze[i][j] == 'd')
 					steps++;
-				
+
 		printSol(M,N,maze);
 		printf("%d steps\n",steps);
 	}
