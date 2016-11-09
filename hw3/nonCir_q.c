@@ -27,6 +27,8 @@ int main()
 			case 2:
 				delete();
 				break;
+			default:
+				break;
 
 		}
 	}
@@ -36,10 +38,36 @@ int main()
 
 void insert()
 {
-	if(rear == MAX -1)
+	int i;
+	if(rear == MAX - 1 && front == 0)
 	{
 		printf("Queue is full\n");
 		return;
+	}
+
+	if(rear == MAX - 1 && front > 0) //if there is space to insert
+	{			
+		for(i=0;i<MAX;i++)
+		{
+			if(hasValue[i])
+				queueArray[i - front] = queueArray[i];
+		}
+		
+		/*clear the old number before shifting*/
+		for(i=rear;i<MAX;i++)
+			queueArray[i] = 0;
+
+		/*reset hasValue array*/
+		for(i=0;i<MAX;i++)
+		{
+			if(queueArray[i])
+				hasValue[i] = 1;
+			else
+				hasValue[i] = 0;
+		}
+		/*shift front and rear*/
+		rear-=front;
+		front = 0;
 	}
 
 	int add_element;
@@ -69,7 +97,7 @@ void delete()
 		hasValue[front + 1] = 0; //set back to 0, position empty
 		front++;
 	}
-	
+
 	/*determine again, output front = 3 rear = 3 isn't legal*/
 	if(front == rear)
 	{
@@ -94,6 +122,6 @@ void printQueue()
 
 		printf("]");
 	}
-
-	printf("\n\n");
+	printf("\n");
+	printf("\n");
 }
