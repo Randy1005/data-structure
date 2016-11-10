@@ -149,6 +149,8 @@ int main()
 
 	int steps = 0; //total steps
 	/*set up initial postion and start solving the maze*/
+
+	ofp = fopen("out.txt","w");
 	if(visit(M,N,maze,startPt.x,startPt.y))
 	{
 		/*changed 's' to '*' in visit accidentally, change back to 's'*/
@@ -161,19 +163,14 @@ int main()
 				if(maze[i][j] == '*' || maze[i][j] == 'd')
 					steps++;
 
-		printSol(M,N,maze);
-		printf("%d steps\n",steps);
+		for(i=0;i<M;i++)
+		{
+			for(j=0;j<N;j++)
+				fprintf(ofp,"%c",maze[i][j]);
+			fprintf(ofp,"\n");
+		}
+		fprintf(ofp,"%d steps\n",steps);
 	}
 	else //no solution
-		printf("No route\n");
-
-
-
-
-
-
-
-
-
-
+		fprintf(ofp,"No route\n");
 }
