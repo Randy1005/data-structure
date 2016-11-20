@@ -7,10 +7,10 @@
 /*smat node*/
 typedef struct smat_node
 {
-	struct node *to_rHead;
+	struct row_head_node *first_rHead;
 	int total_row;
 	int total_col;
-	struct node *to_cHead;
+	struct col_head_node *first_cHead;
 }smatNode;
 
 /*column head node*/
@@ -94,13 +94,59 @@ void initSparse(sparse *spar)
 	spar -> cHead[i] -> down = NULL;
 	spar -> cHead[i] -> next_cHead = NULL;
 
+	/*create and initialize special headNodes*/
+	spar -> smat = malloc(sizeof(smatNode));
+	/*link smatNode to first rHead and cHead*/
+	spar -> smat -> first_rHead = spar -> rHead[0];
+	spar -> smat -> first_cHead = spar -> cHead[0];
+	/*store num of rows and cols*/
+	spar -> smat -> total_row = spar -> maxRow;
+	spar -> smat -> total_col = spar -> maxCol;	
+}
+
+/*read in elements and create mateix of size maxRow * maxCol*/
+void createArray(sparse *spar)
+{
+	int element,i,temp;
+	spar -> sp = malloc((spar -> maxRow)*(spar -> maxCol)*sizeof(int));
 	
+	/*read in  elements and store*/
+	for(i=0;i < (spar->maxRow)*(spar->maxCol);i++)
+		{
+			scanf("%d",&temp);
+			*(spar -> sp + i) = temp;
+		}
+}
+
+/*prints out the matrix*/
+void display(sparse *spar)
+{
+	int i;
+	for(i=0;i < (spar->maxRow)*(spar->maxCol);i++)
+	{
+		if(i % (spar->maxCol) == 0)
+			printf("\n");
+		printf("%d\t", *(spar->sp + i));
+	}
+}
+
+/*counts the number of non-zero elements*/
+int cntNonzero(sparse *spar)
+{
+	int cnt = 0;
+	int i;
+	for(i=0;i < (spar->maxRow)*(spar->maxCol);i++)
+	{
+		if(*(spar->sp + i) != 0)
+			cnt++;
+	}
+	return cnt;
 }
 
 
 int main()
 {
-
+	
 
 	
 }
