@@ -46,11 +46,11 @@ typedef struct sparse_matrix
 	int maxRow;
 	int maxCol;
 	int *sp;
-	int row_index;
+	int num_of_element;
 	smatNode *smat;
 	rHeadNode *rHead[MAXROW];
 	cHeadNode *cHead[MAXCOL];
-	struct node *nd;
+	elementNode *elementNd;
 }sparse;
 
 /*initialize sparse matrix structure*/
@@ -142,6 +142,88 @@ int cntNonzero(sparse *spar)
 	}
 	return cnt;
 }
+
+/*creates an array of triplets, storing infos(row col and value) of each nonzero element*/
+void createInfo(sparse *spar,sparse s)
+{
+	int i;
+	int r = 0;
+	int c = -1;
+	int tripletIndex = -1;
+	spar -> num_of_element = cntNonzero(spar);
+	/*allocate memory for triplets*/
+	spar -> sp = malloc(spar -> num_of_element*3*sizeof(int));
+	for(i=0;i < (spar->maxRow)*(spar->maxCol);i++)
+	{
+		c++;
+		/*store row and col for each element*/
+		if((i % (spar->maxCol)) == 0 && (i!=0))
+		{
+			r++; //row
+			c = 0; //col value set back to 0
+		}
+
+		/*check for nonzero elements.Row, col, value assigned to triplets*/
+		if(*(s.sp + i) != 0)
+		{
+			tripletIndex++; *(spar -> sp + tripletIndex) = r;//triplet index = 0, storing "row"
+			
+			tripletIndex++; *(spar -> sp + tripletIndex) = c;//triplet index = 1, storing "col"
+
+			tripletIndex++; *(spar -> sp + tripletIndex) = *(s.sp + i);//triplet index = 2, storing "value"
+		}
+	}
+}
+
+/*insert element to list*/
+void insert(sparse *spar,smatNode *smat,int r,int c,int val)
+{
+	elementNode *temp1,*temp2;
+	rHeadNode *rHead;
+	cHeadNode *cHead;
+	int i,j;
+	
+	/*allocate memory for element nodes*/
+	spar -> elementNd = malloc(sizeof(elementnode));
+	/*assign info needed to element node*/
+	spar -> elementNd -> row_index = r;
+	spar -> elementNd -> col_index = c;
+	spar -> elementNd -> value = val;
+
+	/*get first row headnode*/
+	rHead = smat -> first_rHead;
+	/*get proprer row headnode*/
+	for(i=0;i<r;i++)
+		rHead = rHead -> next_rHead;
+	
+	temp1 = rHead -> right;
+	
+	/*if no element is added in a row, that is, rowHeadNode points to NULL*/
+	if(temp1 == NULL)
+	{
+		/*then we add element node to the row headnode*/
+		rHead -> right = spar -> elementNd;
+		spar -> elementNd -> right = NULL;
+	}
+
+	 /*row headnode already linked to one or more element nodes*/
+	else
+	{
+		/*add element in proper position*/
+		while(temp1 != NULL && temp1 -> col < c)
+		{
+			//temp2 = temp1;
+			//temp1 = temp1 -> right;
+		}
+
+	}
+
+
+
+}
+
+
+
 
 
 int main()
