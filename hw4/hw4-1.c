@@ -4,6 +4,15 @@
 #define MAXROW 100
 #define MAXCOL 100
 
+/*struct to store element node info*/
+typedef struct elementInfo
+{
+	int row_index;
+	int col_index;
+	int value;
+}info;
+
+
 /*smat node*/
 typedef struct smat_node
 {
@@ -54,11 +63,13 @@ typedef struct sparse_matrix
 }sparse;
 
 /*initialize sparse matrix structure*/
-void initSparse(sparse *spar)
+void initSparse(sparse *spar,int spRow, int spCol)
 {
 	int i;
-	scanf("%d\n",&(spar -> maxRow));
-	scanf("%d\n",&(spar -> maxCol));
+	//scanf("%d\n",&(spar -> maxRow));
+	//scanf("%d\n",&(spar -> maxCol));
+	spar -> maxRow = spRow;
+	spar -> maxCol = spCol;
 	/*create row headNodes*/
 	for(i=0;i < spar -> maxRow;i++)
 		spar -> rHead[i] = malloc(sizeof(rHeadNode));
@@ -126,31 +137,32 @@ void display(sparse *spar)
 	{
 		if(i % (spar->maxCol) == 0)
 			printf("\n");
-		printf("%d\t", *(spar->sp + i));
+		printf("%d ", *(spar->sp + i));
 	}
+	printf("\n");
 }
 
 /*counts the number of non-zero elements*/
-int cntNonzero(sparse *spar)
+int cntNonzero(sparse spar)
 {
 	int cnt = 0;
 	int i;
-	for(i=0;i < (spar->maxRow)*(spar->maxCol);i++)
+	for(i=0;i < (spar.maxRow)*(spar.maxCol);i++)
 	{
-		if(*(spar->sp + i) != 0)
+		if(*(spar.sp + i) != 0)
 			cnt++;
 	}
 	return cnt;
 }
 
 /*creates an array of triplets, storing infos(row col and value) of each nonzero element*/
-void createInfo(sparse *spar,sparse s)
+void createTriplet(sparse *spar,sparse s)
 {
 	int i;
 	int r = 0;
 	int c = -1;
 	int tripletIndex = -1;
-	spar -> num_of_element = cntNonzero(spar);
+	spar -> num_of_element = cntNonzero(s);
 	/*allocate memory for triplets*/
 	spar -> sp = malloc(spar -> num_of_element*3*sizeof(int));
 	for(i=0;i < (spar->maxRow)*(spar->maxCol);i++)
@@ -256,7 +268,8 @@ void insert(sparse *spar,smatNode *smat,int r,int c,int val)
 
 }
 
-/*store info of triplets in a linked list form*/void createList(sparse *spar)
+/*store info of triplets in a linked list form(also inserts element nodes)*/
+void createList(sparse *spar)
 {
 	int j=0,i; //j+=3: triplets come in 3 (0,1,2)->(3,4,5)->.......
 	for(i=0;i < spar -> num_of_element;i++,j+=3)
@@ -264,11 +277,92 @@ void insert(sparse *spar,smatNode *smat,int r,int c,int val)
 }
 
 
+//not sure if needed
+void displayList_as_Array(sparse *spar)
+{
+	//printf("%d\n",spar -> num_of_element);
+	//info Info[spar -> num_of_element];
+	elementNode *temp;
+	/*get first row headnode*/
+	int r = spar -> smat -> total_row;
+	int i,j=0;
+	int k,l,p;
+	
+	printf("\n");
+	for(i=0;i<r;i++)
+	{
+		temp = spar -> rHead[i] -> right;
+		if(temp != NULL)
+		{
+			while(temp -> right != NULL)
+			{
+				/*
+				Info[j].row_index = temp -> row_index;
+				Info[j].col_index = temp -> col_index;
+				Info[j].value = temp -> value;
+				j++;
+				*/
+				printf("%d ",temp -> value);
+				temp = temp -> right;	
+			}
+		}
+
+	}
+	
+		
+	//after storing index and value it's more convenient to print out the matrix
+	/*
+	for(k=0;k < spar->maxRow;k++)
+	{
+		for(l=0;l < spar->maxCol;l++)
+		{
+			for(p=0;p < spar -> num_of_element;p++)
+			{
+				if(Info[p].row_index == k && Info[p].col_index == l)
+				{
+					printf("%d ",Info[p].value);
+					break;
+				}
+				//go through entire array but no match, that is, it's 0 in the sparse matrix
+				if(p == spar -> num_of_element - 1)
+				{
+					printf("0 ");
+					break;
+				}
+			}
+		}
+		printf("\n");
+	}
+	*/
+	 
+}
+
+
+
 int main()
 {
-	
+	int inputRow,inputRow2;
+	int inputCol,inputCol2;
 
+	sparse s1,infoS1,s2,infoS2;
+
+	scanf("%d",&inputRow);
+	scanf("%d",&inputCol);
 	
+	/*first sparse matrix*/
+	initSparse(&s1,inputRow,inputCol);
+	initSparse(&infoS1,inputRow,inputCol);
+	createArray(&s1);
+	createTriplet(&infoS1,s1);
+	createList(&infoS1);
+	displayList_as_Array(&infoS1);
+	
+	scanf("%d",&inputRow2);
+	scanf("%d",&inputCol2);
+
+	initSparse(&s2,inputRow2,inputCol2);
+	initSparse(&infoS2,inputRow2,inputCol2);
+	createArray(&s2);
 }
 
 
