@@ -16,7 +16,7 @@ typedef struct smat_node
 /*column head node*/
 typedef struct col_head_node
 {
-	struct node *down;
+	struct element_node *down;
 	int col_index;
 	struct col_head_node *next_cHead;
 }cHeadNode;
@@ -26,7 +26,7 @@ typedef struct row_head_node
 {
 	struct row_head_node *next_rHead;
 	int row_index;
-	struct node *right;
+	struct element_node *right;
 
 }rHeadNode;
 
@@ -36,8 +36,8 @@ typedef struct element_node
 	int row_index;
 	int col_index;
 	int value;
-	struct node *down;
-	struct node *right;
+	struct element_node *down;
+	struct element_node *right;
 }elementNode;
 
 /*sparse matrix structure*/
@@ -178,13 +178,13 @@ void createInfo(sparse *spar,sparse s)
 /*insert element to list*/
 void insert(sparse *spar,smatNode *smat,int r,int c,int val)
 {
-	elementNode *temp1,*temp2;
+	elementNode *previous,*temp;
 	rHeadNode *rHead;
 	cHeadNode *cHead;
 	int i,j;
 	
 	/*allocate memory for element nodes*/
-	spar -> elementNd = malloc(sizeof(elementnode));
+	spar -> elementNd = malloc(sizeof(elementNode));
 	/*assign info needed to element node*/
 	spar -> elementNd -> row_index = r;
 	spar -> elementNd -> col_index = c;
@@ -196,10 +196,10 @@ void insert(sparse *spar,smatNode *smat,int r,int c,int val)
 	for(i=0;i<r;i++)
 		rHead = rHead -> next_rHead;
 	
-	temp1 = rHead -> right;
+	temp = rHead -> right;
 	
 	/*if no element is added in a row, that is, rowHeadNode points to NULL*/
-	if(temp1 == NULL)
+	if(temp == NULL)
 	{
 		/*then we add element node to the row headnode*/
 		rHead -> right = spar -> elementNd;
@@ -210,20 +210,58 @@ void insert(sparse *spar,smatNode *smat,int r,int c,int val)
 	else
 	{
 		/*add element in proper position*/
-		while(temp1 != NULL && temp1 -> col < c)
-		{
-			//temp2 = temp1;
-			//temp1 = temp1 -> right;
-		}
 
+		/*-----caution-----*/
+		//inserting nodes requires:
+		//1.previous node  ('previous')
+		//2.previous -> next node ('temp')
+		//keep pushing 'temp to the right until we find the position we want to insert the element node
+		/*-----------------*/
+
+		while(temp != NULL && temp -> col_index < c)
+		{
+			//push to the right until we find proper position to insert
+			previous = temp;
+			temp = temp -> right;
+		}
+		//after finding position, insert element node
+		previous -> right = spar -> elementNd;
+		spar -> elementNd -> right = NULL;
 	}
 
+	/*link proper col headnode with the elementnode*/
+	cHead = spar -> smat -> first_cHead;
+	for(j=0;j<c;j++)
+		cHead = cHead -> next_cHead;
+	
+	temp = cHead -> down;
+	
+	/*same insert method as row headnode*/
+	if(temp == NULL) 
+	{
+		cHead -> down = spar -> elementNd;
+		spar -> elementNd -> down = NULL;
+	}
+	else
+	{
+		while((temp != NULL) && (temp -> row_index < r))
+		{
+			previous = temp;
+			temp = temp -> down;
+		}
 
+		previous -> down = spar -> elementNd;
+		spar -> elementNd -> down = NULL;
+	}
 
 }
 
-
-
+/*store info of triplets in a linked list form*/void createList(sparse *spar)
+{
+	int j=0,i; //j+=3: triplets come in 3 (0,1,2)->(3,4,5)->.......
+	for(i=0;i < spar -> num_of_element;i++,j+=3)
+		insert(spar, spar -> smat, *(spar -> sp + j), *(spar -> sp + j+1), *(spar -> sp + j+2));		
+}
 
 
 int main()
