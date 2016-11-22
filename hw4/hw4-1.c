@@ -278,7 +278,7 @@ void createList(sparse *spar)
 
 
 //not sure if needed
-void displayList_as_Array(sparse *spar)
+void displayList(sparse *spar)
 {
 	//printf("%d\n",spar -> num_of_element);
 	//info Info[spar -> num_of_element];
@@ -302,9 +302,11 @@ void displayList_as_Array(sparse *spar)
 				Info[j].value = temp -> value;
 				j++;
 				*/
-				printf("%d ",temp -> value);
+				printf("Row:%d Col:%d Val:%d\n",temp -> row_index,temp -> col_index,temp -> value);
 				temp = temp -> right;	
 			}
+			if(temp -> row_index == i)
+				printf("Row:%d Col:%d Val:%d\n",temp -> row_index,temp -> col_index,temp -> value);
 		}
 
 	}
@@ -355,7 +357,7 @@ int main()
 	createArray(&s1);
 	createTriplet(&infoS1,s1);
 	createList(&infoS1);
-	displayList_as_Array(&infoS1);
+	displayList(&infoS1);
 	
 	scanf("%d",&inputRow2);
 	scanf("%d",&inputCol2);
