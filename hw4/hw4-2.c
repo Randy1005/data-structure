@@ -1,16 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define MAXROW 100
-#define MAXCOL 100
-
-/*struct to store element node info*/
-typedef struct elementInfo
-{
-	int row_index;
-	int col_index;
-	int value;
-}info;
+#define MAXROW 1000
+#define MAXCOL 1000
 
 
 /*smat node*/
@@ -329,13 +321,8 @@ int main()
 	initSparse(&infoS,inputRow,inputCol);
 	createArray(&s);
 	createTriplet(&infoS,s);
-	transpose(&infoS);
+	transpose(&infoS); //switch to createList(&infoS) -> creates a linked list storing sparse matrix s
 	showList(&infoS);
-
-	
-
-
-
 
 }
 
