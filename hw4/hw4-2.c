@@ -274,7 +274,6 @@ void showList(sparse *spar)
 	/*get first row headnode*/
 	int r = spar -> smat -> total_row;
 	int i,j=0;
-	int k,l,p;
 
 	printf("\n");
 	for(i=0;i<r;i++)
@@ -302,11 +301,49 @@ void transpose(sparse *spar,sparse *trans)
 	//j+=3: triplets come in 3 (0,1,2)->(3,4,5)->.......
 	for(i=0;i < spar -> num_of_element;i++,j+=3)
 		insert(trans, trans -> smat, *(spar -> sp + j+1), *(spar -> sp + j), *(spar -> sp + j+2));
-				
+
 }
 
-void printResult(sparse *infoTr)
+void printResult(sparse *spar)
 {
+	int i,j = 0;
+	/*for printing result*/
+	int result[spar -> maxRow][spar -> maxCol];
+	
+	/*initialize array*/
+	for(i=0;i<spar->maxRow;i++)
+		for(j=0;j<spar->maxCol;j++)
+			result[i][j] = 0;
+	
+	/*visit the nodes to get nonzero elements*/
+	elementNode *temp;
+	/*get first row headnode*/
+	int r = spar -> smat -> total_row;
+
+	for(i=0;i<r;i++)
+	{
+		temp = spar -> rHead[i] -> right;
+		if(temp != NULL)
+		{
+			while(temp -> right != NULL)
+			{
+				result[temp -> row_index][temp -> col_index] = temp -> value;	
+				temp = temp -> right;	
+			}
+			if(temp -> row_index == i)	
+				result[temp -> row_index][temp -> col_index] = temp -> value;	
+		}
+	}
+
+	printf("\n");
+	/*print out result*/
+	for(i=0;i<spar -> maxRow;i++)
+	{
+		for(j=0;j<spar -> maxCol;j++)
+			printf("%d ",result[i][j]);
+		printf("\n");
+	}
+
 
 }
 
@@ -343,8 +380,8 @@ int main()
 	/////////////////////////////
 	transpose(&infoS,&trans);
 
-	showList(&trans);
-	
+	printResult(&trans);
+
 
 }
 
