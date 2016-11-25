@@ -296,13 +296,18 @@ void showList(sparse *spar)
 }
 
 //it's basically "createList" function, but I switched row and column when inserting element nodes (transpose)
-void transpose(sparse *spar,sparse *infoTr)
+void transpose(sparse *spar,sparse *trans)
 {
 	int i,j=0;
 	//j+=3: triplets come in 3 (0,1,2)->(3,4,5)->.......
 	for(i=0;i < spar -> num_of_element;i++,j+=3)
-		insert(infoTr, infoTr -> smat, *(spar -> sp + j+1), *(spar -> sp + j), *(spar -> sp + j+2));
+		insert(trans, trans -> smat, *(spar -> sp + j+1), *(spar -> sp + j), *(spar -> sp + j+2));
 				
+}
+
+void printResult(sparse *infoTr)
+{
+
 }
 
 
@@ -312,7 +317,7 @@ int main()
 	int inputRow,inputCol;
 
 	sparse s,infoS;
-	sparse trans,infoTr;
+	sparse trans;
 
 	scanf("%d",&inputRow);
 	scanf("%d",&inputCol);
@@ -324,7 +329,6 @@ int main()
 	createList(&infoS);
 
 	initSparse(&trans,inputCol,inputRow);
-	initSparse(&infoTr,inputCol,inputRow);
 
 	///////// createArray ////////
 	/*allocate memory for trans*/
