@@ -110,7 +110,7 @@ void initSparse(sparse *spar,int spRow, int spCol)
 /*read in elements and create mateix of size maxRow * maxCol*/
 void createArray(sparse *spar)
 {
-	int element,i,temp;
+	int i,temp;
 	spar -> sp = malloc((spar -> maxRow)*(spar -> maxCol)*sizeof(int));
 
 	/*read in  elements and store*/
@@ -268,8 +268,6 @@ void createList(sparse *spar)
 		insert(spar, spar -> smat, *(spar -> sp + j), *(spar -> sp + j+1), *(spar -> sp + j+2));		
 }
 
-
-//not sure if needed
 void showList(sparse *spar)
 {
 	elementNode *temp;
@@ -298,11 +296,13 @@ void showList(sparse *spar)
 }
 
 //it's basically "createList" function, but I switched row and column when inserting element nodes (transpose)
-void transpose(sparse *spar)
-{	
-	int j=0,i; //j+=3: triplets come in 3 (0,1,2)->(3,4,5)->.......
+void transpose(sparse *spar,sparse *infoTr)
+{
+	int i,j=0;
+	//j+=3: triplets come in 3 (0,1,2)->(3,4,5)->.......
 	for(i=0;i < spar -> num_of_element;i++,j+=3)
-		insert(spar, spar -> smat, *(spar -> sp + j+1), *(spar -> sp + j), *(spar -> sp + j+2));		
+		insert(infoTr, infoTr -> smat, *(spar -> sp + j+1), *(spar -> sp + j), *(spar -> sp + j+2));
+				
 }
 
 
@@ -312,7 +312,7 @@ int main()
 	int inputRow,inputCol;
 
 	sparse s,infoS;
-	sparse trans;
+	sparse trans,infoTr;
 
 	scanf("%d",&inputRow);
 	scanf("%d",&inputCol);
@@ -321,8 +321,26 @@ int main()
 	initSparse(&infoS,inputRow,inputCol);
 	createArray(&s);
 	createTriplet(&infoS,s);
-	transpose(&infoS); //switch to createList(&infoS) -> creates a linked list storing sparse matrix s
-	showList(&infoS);
+	createList(&infoS);
+
+	initSparse(&trans,inputCol,inputRow);
+	initSparse(&infoTr,inputCol,inputRow);
+
+	///////// createArray ////////
+	/*allocate memory for trans*/
+	int i,j=0;
+	(&trans) -> sp = malloc(((&trans) -> maxRow)*((&trans) -> maxCol)*sizeof(int));
+
+	/*initialize as 0s*/
+	for(i=0;i < ((&trans)->maxRow)*((&trans)->maxCol);i++)
+	{
+		*((&trans) -> sp + i) = 0;
+	}
+	/////////////////////////////
+	transpose(&infoS,&trans);
+
+	showList(&trans);
+	
 
 }
 
