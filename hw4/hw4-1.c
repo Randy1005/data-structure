@@ -346,50 +346,49 @@ void printResult(sparse *spar)
 
 }
 
-void multiply(sparse *s1,sparse *s2,sparse *result)
+void multiply(sparse *s1,sparse *s2)
 {
 	int sum = 0;
-	int i,j;
+	int i,j = 0;
+	/*array for printing*/
+	int result[s1 -> maxRow][s2 -> maxCol];
+	/*initialize*/
+	for(i=0;i<s1->maxRow;i++)
+		for(j=0;j<s2->maxCol;j++)
+			result[i][j] = 0;
+	
 	/*visit the nodes to get nonzero elements*/
 	elementNode *temp1, *temp2;
 	int r = s1 -> smat -> total_row;
-	int c = s2 -> smat -> total_col; 
-
-	//visit through rows and cols, if row = col, multiply and sum up
+	int c = s2 -> smat -> total_col;
+	//visit through rows and cols, if s1->col = s2->col, multiply and sum up
 	for(i=0;i<r;i++)
 	{
 		temp1 = s1 -> rHead[i] -> right;
-		if(temp1 != NULL) //if row has value
+		while(temp1 != NULL) //if row has value
 		{
+			sum = 0;
 			for(j=0;j<c;j++)
-			{
-				while(temp1 != NULL)
-				{		
-					temp2 = s2 -> cHead[j] -> down;
-					while(temp2 != NULL) //if col has value
-					{
-						if((temp1 -> row_index) == (temp2 -> col_index))
-						{
-							sum += (temp1 -> value)*(temp2 -> value);
-							if(sum != 0)
-							{	
-								insert(result,result -> smat,i,j,sum);
-								sum = 0;
-							}
-						}	
-						temp2 = temp2 -> down; //ptr shift down
-					}
-					temp1 = temp1 -> right;//ptr shift right
-				}
-				/*
-				if(sum != 0)
+			{		
+				temp2 = s2 -> cHead[j] -> down;
+				while(temp2 != NULL) //if col has value
 				{
-					insert(result,result -> smat,i,j,sum);
-				}
-				*/
+					if((temp1 -> col_index) == (temp2 -> row_index))
+						sum += (temp1 -> value)*(temp2 -> value);
+
+					temp2 = temp2 -> down;
+				}			
 			}
-				
+			temp1 = temp1 -> right;
 		}
+		result[i][j] = sum;	
+	}
+	/*print out result*/
+	for(i=0;i<r;i++)
+	{
+		for(j=0;j<c;j++)
+			printf("%d ",result[i][j]);
+		printf("\n");
 	}
 
 }
@@ -423,13 +422,7 @@ int main()
 	createTriplet(&infoS2,s2);
 	createList(&infoS2);
 
-	/*result matrix*/
-	initSparse(&result,inputRow,inputCol2);
-	initSparse(&infoRE,inputRow,inputCol2);
-	//multiply(&infoS1,&infoS2,&result);   problems here
-
-	printResult(&result);
-	
+	multiply(&infoS1,&infoS2);
 }
 
 
