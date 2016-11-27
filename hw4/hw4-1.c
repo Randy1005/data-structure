@@ -294,15 +294,6 @@ void showList(sparse *spar)
 
 }
 
-//it's basically "createList" function, but I switched row and column when inserting element nodes (transpose)
-void transpose(sparse *spar,sparse *trans)
-{
-	int i,j=0;
-	//j+=3: triplets come in 3 (0,1,2)->(3,4,5)->.......
-	for(i=0;i < spar -> num_of_element;i++,j+=3)
-		insert(trans, trans -> smat, *(spar -> sp + j+1), *(spar -> sp + j), *(spar -> sp + j+2));
-
-}
 
 void printResult(sparse *spar)
 {
@@ -361,36 +352,32 @@ void multiply(sparse *s1,sparse *s2)
 	elementNode *temp1, *temp2;
 	int r = s1 -> smat -> total_row;
 	int c = s2 -> smat -> total_col;
-	//visit through rows and cols, if s1->col = s2->col, multiply and sum up
+	//visit through rows and cols, if s1->col = s2->row, multiply and sum up
 	for(i=0;i<r;i++)
 	{
 		temp1 = s1 -> rHead[i] -> right;
-		while(temp1 != NULL) //if row has value
-		{
-			sum = 0;
-			for(j=0;j<c;j++)
-			{		
-				temp2 = s2 -> cHead[j] -> down;
-				while(temp2 != NULL) //if col has value
-				{
-					if((temp1 -> col_index) == (temp2 -> row_index))
-						sum += (temp1 -> value)*(temp2 -> value);
-
-					temp2 = temp2 -> down;
-				}			
+		for(j=0;j<c;j++)
+		{	
+			temp2 = s2 -> cHead[j] -> down;
+			while(temp1 != NULL && temp2 != NULL)
+			{
+				if(temp1 -> col_index == temp2 -> row_index)
+				sum += (temp1 -> value)*(temp2 -> value);
+				temp1 = temp1 -> right;
+				temp2 = temp2 -> down;
 			}
-			temp1 = temp1 -> right;
+			if(sum != 0)
+				result[i][j] = sum;
+			temp1 = s1 -> rHead[i] -> right; //run aagain from the beginnig of the row
+			sum = 0; //reset
 		}
-		result[i][j] = sum;	
 	}
-	/*print out result*/
 	for(i=0;i<r;i++)
 	{
 		for(j=0;j<c;j++)
 			printf("%d ",result[i][j]);
 		printf("\n");
 	}
-
 }
 
 int main()
