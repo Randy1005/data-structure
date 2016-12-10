@@ -3,6 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <math.h>
 using namespace std;
 #define LCHILD(x) 2*x + 1
 #define RCHILD(x) 2*x + 2
@@ -32,11 +33,11 @@ void push(maxHeap *mheap, int value){
 	}
 	else
 		mheap -> element = (node *)malloc(sizeof(node));
-		
+
 	//initialize node with value
 	node nd;
 	nd.data = value;
-	
+
 	//positioning node at the right position
 	int i = (mheap -> size)++;
 	while(i && nd.data > mheap -> element[PARENT(i)].data){
@@ -51,7 +52,6 @@ void swap(node *n1, node *n2){
 	*n1 = *n2;
 	*n2 = temp;
 }
-
 
 int totalElem()
 {
@@ -74,18 +74,90 @@ void readIn(int Arr[]){
 		input.ignore(1,',');
 	}
 	input.close();
+
+}
+
+//various types of traversal
+
+void levelOrderTrav(maxHeap *mheap){
+	int n = 0;
+	int cnt = 0;
+	cout << "Max Heap:" << endl;
+	for(int i=0; i<mheap->size ; i++){
+		cout << mheap->element[i].data << " ";
+
+		if(i == n){
+			cout << endl;
+			cnt++;
+			n+=pow(2,cnt);
+		}
+	}
+	cout << endl;	
+}
+
+void postOrderTrav(maxHeap *mheap,int i){
+	printf("%d ",mheap->element[i].data);
+	if(LCHILD(i) < mheap->size)
+		postOrderTrav(mheap,LCHILD(i));
+	if(RCHILD(i) < mheap->size)
+		postOrderTrav(mheap,RCHILD(i));
+
+}
+
+void inOrderTrav(maxHeap *mheap, int i) {
+	if(LCHILD(i) < mheap->size) {
+		inOrderTrav(mheap,LCHILD(i));
+	}
+
+	printf("%d ", mheap->element[i].data);
+	
+	if(RCHILD(i) < mheap->size) {
+		inOrderTrav(mheap,RCHILD(i));
+	}
+}
+void changePriority(int mheapArr[],maxHeap *mheap){
+	int choicePrior;
+	int changeTo;
+	cout << "Choice priority: ";
+	cin >> choicePrior;
+	cout << "Change priority to: ";
+	cin >> changeTo;
+
+	//traverse mheapArr and change numbers
+	for(int i=0;i<totalElem();i++)
+	{
+		if(mheapArr[i] == choicePrior)
+			mheapArr[i] = changeTo;
+	}
 	
 }
 
-
 int main(void)
 {
-	maxHeap mheap = initMaxHeap();
 	int mheapArr[totalElem()];
-	
 	readIn(mheapArr);
-	for(int i=0;i<totalElem();i++)
-		cout<<mheapArr[i]<<endl;
+	
+	while(1)
+	{
+		maxHeap mheap = initMaxHeap();
+		for(int i=0;i<totalElem();i++)
+			push(&mheap,mheapArr[i]);
+		levelOrderTrav(&mheap);
+		cout << "Change Priority? (Y/N):";
+		char yesOrno;
+		cin >> yesOrno;
+		switch(yesOrno){
+			case 'Y':
+				changePriority(mheapArr,&mheap);
+				break;
+			case 'N':
+				exit(1);
+			default:
+				cout<<"Error"<<endl;
+				break;
+		}
+		
+	}
 
 }
 
