@@ -161,7 +161,7 @@ int main(void)
 		}
 		clock_t end = clock();
 		double timeSpent = (double)(end - begin)/CLOCKS_PER_SEC;
-		cout << "Spend time:" << timeSpent << endl;
+		cout << "Spend time:" << timeSpent << " sec" << endl;
 	}
 }
 
