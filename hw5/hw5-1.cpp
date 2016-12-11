@@ -4,6 +4,7 @@
 #include <fstream>
 #include <sstream>
 #include <math.h>
+#include <time.h>
 using namespace std;
 #define LCHILD(x) 2*x + 1
 #define RCHILD(x) 2*x + 2
@@ -136,13 +137,18 @@ int main(void)
 {
 	int mheapArr[totalElem()];
 	readIn(mheapArr);
-	
+
+	clock_t begin1 = clock();
+	maxHeap mheap = initMaxHeap();
+	for(int i=0;i<totalElem();i++)
+		push(&mheap,mheapArr[i]);
+	levelOrderTrav(&mheap);
+	clock_t end1 = clock();
+	double timeSpent1 = (double)(end1 - begin1)/ CLOCKS_PER_SEC;
+
 	while(1)
 	{
-		maxHeap mheap = initMaxHeap();
-		for(int i=0;i<totalElem();i++)
-			push(&mheap,mheapArr[i]);
-		levelOrderTrav(&mheap);
+		clock_t begin2 = clock();
 		cout << "Change Priority? (Y/N):";
 		char yesOrno;
 		cin >> yesOrno;
@@ -156,9 +162,13 @@ int main(void)
 				cout<<"Error"<<endl;
 				break;
 		}
-		
+			
+		clock_t end2 = clock();
+		double timeSpent2 = (double)(end2 - begin2)/ CLOCKS_PER_SEC;
+		levelOrderTrav(&mheap);
+		cout << "Spend time:" << timeSpent1 + timeSpent2 << " sec" << endl;
+		cout << endl;
 	}
-
 }
 
 
