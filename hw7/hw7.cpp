@@ -119,14 +119,25 @@ int main()
 	}
 	cal_earlyEvent(eEvent,event,aoe);
 	cal_lateEvent(lEvent,eEvent,event,aoe);
-	int *eAct = new int[activities];
-	int *lAct = new int[activities];
+	int *eAct;
+	eAct = new int[activities];
+	int *lAct;
+	lAct = new int[activities];
 
-	cal_eAct_lAct(eEvent,lEvent,eAct,lAct,event,aoe);
-	cout << "e:" <<	endl;
+	//printArr(eEvent,event);
+	//printArr(lEvent,event);
+
+	cal_eAct_lAct(eAct,lAct,eEvent,lEvent,event,aoe);
+	cout << "Early Time:" << endl;
 	printArr(eAct,activities);
-	cout << "l:" <<endl;
+	cout << "Late Time:" << endl;
 	printArr(lAct,activities);
+
+	int *slack = new int[activities];
+	for(int i=0;i<activities;i++)
+		slack[i] = lAct[i] - eAct[i];
+	cout << "Slack:" << endl;
+	printArr(slack,activities);
 }
 
 
