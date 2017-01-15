@@ -3,17 +3,22 @@
 #include <cstdio>
 using namespace std;
 
+void printArr(int *arr, int len) {
+	for (int i = 0; i < len; i++) {
+		cout << arr[i] << " ";
+	}
+	cout << endl;
+}
 
 /*early events time*/
 /*ee[j] = max {ee[i] + duration of <i, j>}*/
 void cal_earlyEvent(int *ee, int events, int **aoe) 
 {
-	for (int i = 0; i < events; i++) {
-		for (int j = 0; j < events; j++) {
-			if (aoe[i][j] != 0 && ee[i] + aoe[i][j] > ee[j]) {
+	for (int i = 0; i < events; i++) 
+	{
+		for (int j = 0; j < events; j++) 
+			if (aoe[i][j] != 0 && ee[i] + aoe[i][j] > ee[j]) 
 				ee[j] = ee[i] + aoe[i][j];
-			}
-		}
 	}
 }
 
@@ -23,12 +28,11 @@ void cal_lateEvent(int *le, int *ee, int events, int **aoe)
 {
 	int len = events - 1;
 	le[len] = ee[len];
-	for (int i = len; i >= 0; --i) {
-		for (int j = len; j >= 0; --j) {
-			if (aoe[i][j] != 0 && le[j] - aoe[i][j] < le[i]) {
+	for (int i = len; i >= 0; --i) 
+	{
+		for (int j = len; j >= 0; --j) 
+			if (aoe[i][j] != 0 && le[j] - aoe[i][j] < le[i]) 
 				le[i] = le[j] - aoe[i][j];
-			}
-		}
 	}
 }
 
@@ -41,9 +45,12 @@ void cal_lateEvent(int *le, int *ee, int events, int **aoe)
 void cal_eAct_lAct(int *e, int *l, int *ee, int *le, int events, int **aoe)
 {
 	int k = 0;
-	for (int i = 0; i < events; i++) {
-		for (int j = 0; j < events; j++) {
-			if (aoe[i][j] != 0) {
+	for (int i = 0; i < events; i++) 
+	{
+		for (int j = 0; j < events; j++) 
+		{
+			if (aoe[i][j] != 0) 
+			{
 				e[k] = ee[i];
 				l[k++] = le[j] - aoe[i][j];
 			}
@@ -75,6 +82,9 @@ int main()
 
 	/*create AOE matrix*/
 	int **aoe;
+	aoe = new int *[event];
+	for(int i=0;i<event;i++)
+		aoe[i] = new int[10];
 
 	while(!feof(ifp))
 	{
@@ -95,33 +105,28 @@ int main()
 		for(int j=0;j<event;j++)
 			if(aoe[i][j]) activities++;
 
-
 	/*calculate early event time & late event time*/
-	int eEvent[event];
-	int lEvent[event];
+
+	int *eEvent;
+	int *lEvent;
+	eEvent = new int[event];
+	lEvent = new int[event];
 
 	for(int i=0;i<event;i++)
 	{
 		eEvent[i] = 0;
 		lEvent[i] = 9999;
 	}
-	
 	cal_earlyEvent(eEvent,event,aoe);
 	cal_lateEvent(lEvent,eEvent,event,aoe);
-	int eAct[activities];
-	int lAct[activities];
-	
-	cal_eAct_lAct(eEvent,lEvent,eAct,lAct,event,aoe);
-	
-	cout << "e:" <<	endl;
-	for(int i=0;i<activities;i++)
-		cout << eAct[i] << " ";
-	cout << endl;
+	int *eAct = new int[activities];
+	int *lAct = new int[activities];
 
+	cal_eAct_lAct(eEvent,lEvent,eAct,lAct,event,aoe);
+	cout << "e:" <<	endl;
+	printArr(eAct,activities);
 	cout << "l:" <<endl;
-	for(int i=0;i<activities;i++)
-		cout << lAct[i] <<endl;
-	cout << endl;
+	printArr(lAct,activities);
 }
 
 
